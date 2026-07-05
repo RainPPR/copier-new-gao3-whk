@@ -1,0 +1,10 @@
+[project]
+name = "copier-new-gao3-whk"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "nuitka[onefile]>=4.1.3",
+    "ziglang>=0.16.0",
+]
