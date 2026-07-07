@@ -991,15 +991,15 @@ import os
 # 标准化扩展名集合（不带点）
 _VALID_EXTS = set()
 for ext in endswith_list:
-    _VALID_EXTS.add(ext.lstrip('.').lower())
+    _VALID_EXTS.add(ext.lstrip(".").lower())
 
 # 标准化忽略路径集合
 _IGNORE_SET = set()
-if 'ignore_str' in globals():
+if "ignore_str" in globals():
     for line in ignore_str.splitlines():
         line = line.strip()
         if line:
-            _IGNORE_SET.add(line.replace('\\', '/'))
+            _IGNORE_SET.add(line.replace("\\", "/"))
 
 
 def is_need(filepath):
@@ -1017,15 +1017,15 @@ def is_need(filepath):
         return False
 
     # 统一路径分隔符并去除首尾空白
-    filepath = filepath.replace('\\', '/').strip()
+    filepath = filepath.replace("\\", "/").strip()
 
     # 获取文件名和扩展名
     filename = os.path.basename(filepath)
-    dot_pos = filename.rfind('.')
+    dot_pos = filename.rfind(".")
     if dot_pos == -1:
         return False  # 无扩展名，跳过
 
-    ext = filename[dot_pos + 1:].lower()
+    ext = filename[dot_pos + 1 :].lower()
     if ext not in _VALID_EXTS:
         return False
 
@@ -1042,4 +1042,3 @@ def should_ignore(rel_path):
     这是 is_need 的反向接口。
     """
     return not is_need(rel_path)
-

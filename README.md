@@ -7,7 +7,6 @@ uv run nuitka main.py --standalone --enable-plugin=tk-inter --zig
 uv run --python=3.13 pyinstaller --noupx --onefile --name copier-new-gao3-whk-313 --clean --uac-admin --hidden-import=allpath --hidden-import=ignore main.py
 uv run --python=3.8 pyinstaller --noupx --onefile --name copier-new-gao3-whk-38 --clean --uac-admin --hidden-import=allpath --hidden-import=ignore main.py
 
-
 uv run --python=3.8 pyinstaller --noupx --onedir --name copier-new-gao3-whk-38 --clean --uac-admin --hidden-import=allpath --hidden-import=ignore main.py
 
 ## PyInstaller 打包方案

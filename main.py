@@ -7,6 +7,15 @@ import tkinter as tk
 from tkinter import filedialog, scrolledtext
 
 
+current_dir = os.getcwd()
+if os.path.basename(current_dir) == "_internal":
+    parent_dir = os.path.dirname(current_dir)
+    os.chdir(parent_dir)
+    print(f"检测到 _internal 目录，已成功切换到上一级：{os.getcwd()}")
+else:
+    print(f"当前目录不是 _internal，无需切换：{current_dir}")
+
+
 def get_parent_of_selected_folder():
     """弹出文件夹选择框，并返回所选文件夹的父级文件夹路径。"""
     root = tk.Tk()
@@ -32,7 +41,7 @@ def collect_files(source_dir, source_name, target_name, script_dir):
             source_file = os.path.join(root, file)
             rel_path = os.path.relpath(source_file, source_dir)
             # 统一使用正斜杠
-            rel_path_fwd = rel_path.replace('\\', '/')
+            rel_path_fwd = rel_path.replace("\\", "/")
             full_rel_path = f"{source_name}/{rel_path_fwd}"
 
             # 检查是否需要复制（扩展名在允许列表中，且不在忽略列表中）
@@ -40,7 +49,11 @@ def collect_files(source_dir, source_name, target_name, script_dir):
                 continue
 
             # 检查目标文件是否已存在
-            target_sub_path = rel_path_fwd.replace(f"{source_name}/", "", 1) if rel_path_fwd.startswith(f"{source_name}/") else rel_path_fwd
+            target_sub_path = (
+                rel_path_fwd.replace(f"{source_name}/", "", 1)
+                if rel_path_fwd.startswith(f"{source_name}/")
+                else rel_path_fwd
+            )
             target_file = os.path.join(target_base, target_sub_path)
             if os.path.exists(target_file):
                 continue
@@ -78,8 +91,12 @@ def show_confirmation_dialog(file_list, all_need, parent_path, script_dir):
         dialog.destroy()
         print("已取消复制。")
 
-    tk.Button(btn_frame, text="执行复制", command=do_execute, width=15).pack(side=tk.LEFT, padx=10)
-    tk.Button(btn_frame, text="不执行", command=do_cancel, width=15).pack(side=tk.LEFT, padx=10)
+    tk.Button(btn_frame, text="执行复制", command=do_execute, width=15).pack(
+        side=tk.LEFT, padx=10
+    )
+    tk.Button(btn_frame, text="不执行", command=do_cancel, width=15).pack(
+        side=tk.LEFT, padx=10
+    )
 
     dialog.mainloop()
 
@@ -95,10 +112,12 @@ def execute_copy(file_list, all_need, parent_path, script_dir):
             continue
 
         # 筛选出属于该 source_name 的文件
-        relevant_files = [(fp, sn, sp) for fp, sn, sp in file_list if fp.startswith(f"{source_name}/")]
+        relevant_files = [
+            (fp, sn, sp) for fp, sn, sp in file_list if fp.startswith(f"{source_name}/")
+        ]
 
         for full_rel_path, _, target_sub_path in relevant_files:
-            source_file = os.path.join(source_dir, target_sub_path.replace('/', '\\'))
+            source_file = os.path.join(source_dir, target_sub_path.replace("/", "\\"))
             target_dir = os.path.join(script_dir, target_name)
             target_file = os.path.join(target_dir, target_sub_path)
             target_file_dir = os.path.dirname(target_file)
@@ -129,14 +148,12 @@ if __name__ == "__main__":
         print("未找到任何匹配的文件夹。")
         sys.exit(0)
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-
     # 收集所有需要复制的文件
     all_files = []
     for source_name, target_name in all_need.items():
         source_dir = os.path.join(parent_path, source_name)
         print(f"正在扫描: {source_dir}")
-        files = collect_files(source_dir, source_name, target_name, script_dir)
+        files = collect_files(source_dir, source_name, target_name, current_dir)
         all_files.extend(files)
         print(f"  -> 找到 {len(files)} 个待复制文件")
 
@@ -145,4 +162,4 @@ if __name__ == "__main__":
         sys.exit(0)
 
     print(f"总计 {len(all_files)} 个文件待复制")
-    show_confirmation_dialog(all_files, all_need, parent_path, script_dir)
+    show_confirmation_dialog(all_files, all_need, parent_path, current_dir)
