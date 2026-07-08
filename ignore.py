@@ -977,8 +977,7 @@ mimetypes.init()
 
 for ext, mime_type in mimetypes.types_map.items():
     if (
-        mime_type.startswith("audio/")
-        or "zip" in mime_type
+        "zip" in mime_type
         or "tar" in mime_type
         or "compressed" in mime_type
         or "gzip" in mime_type
@@ -1018,6 +1017,9 @@ def is_need(filepath):
 
     # 统一路径分隔符并去除首尾空白
     filepath = filepath.replace("\\", "/").strip()
+
+    if "~$" in filepath:
+        return False
 
     # 获取文件名和扩展名
     filename = os.path.basename(filepath)
