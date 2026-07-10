@@ -1,0 +1,30 @@
+name: Build Windows EXE
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Build with PyInstaller
+        run: uv run --python=3.8 pyinstaller --noupx --onefile --name copier-new-gao3-whk-38 --clean --uac-admin --hidden-import=allpath --hidden-import=ignore main.py
+
+      - name: Copy exe to repo root
+        run: Copy-Item -LiteralPath "dist/copier-new-gao3-whk-38.exe" -Destination "copier-new-gao3-whk-38.exe" -Force
+
+      - name: Commit and push exe
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add copier-new-gao3-whk-38.exe
+          git commit -m "chore: update built copier-new-gao3-whk-38.exe" || echo "Nothing to commit"
+          git push
