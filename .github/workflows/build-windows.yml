@@ -15,6 +15,8 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
 
       - name: Build with PyInstaller
         run: uv run --python=3.8 pyinstaller --noupx --onefile --name copier-new-gao3-whk-38 --clean --uac-admin --hidden-import=allpath --hidden-import=ignore main.py

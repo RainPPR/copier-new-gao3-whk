@@ -1046,7 +1046,7 @@ endswith_list = {
     "xlsx",
     "xls",
     "txt",
-    ".md",
+    "md",
     "pdf",
     "rar",
     "zip",
